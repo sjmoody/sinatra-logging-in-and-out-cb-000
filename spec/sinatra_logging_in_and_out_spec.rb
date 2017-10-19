@@ -14,24 +14,30 @@ describe 'ApplicationController' do
   end
 
   describe "POST '/login'" do
+
     before do
       @user1 = User.create(:username => "skittles123", :password => "iluvskittles", :balance => 1000)
       @user2 = User.create(:username => "flatiron4lyfe", :password => "Rubie!", :balance => 500)
       @user3 = User.create(:username => "kittens1265", :password => "crazycatlady", :balance => 10000)
+      # binding.pry
     end
 
     it "returns a 302 redirect status code" do
       params = {
         "username"=> "skittles123", "password" => "iluvskittles"
       }
+
       post '/login', params
+
       expect(last_response.status).to eq(302)
     end
 
     it "sets session[:user_id] equal to id of the user" do
+
       post '/login', {
         "username"=> "flatiron4lyfe", "password" => "Rubie!"
       }
+      # binding.pry
       follow_redirect!
       expect(session[:user_id]).to eq(2)
     end
@@ -67,14 +73,14 @@ describe 'ApplicationController' do
       }
       expect(last_response.body).to include('You Must <a href="/">Log In</a> to View Your Balance')
     end
-  end
-
+  # end
+  #
   describe "GET '/account'" do
     it "shows the error page if user goes directly to /account" do
       get '/account'
       expect(last_response.body).to include('You Must <a href="/">Log In</a> to View Your Balance')
     end
-
+  #
     it 'displays the account information if a user is logged in' do
       user1 = User.create(:username => "skittles123", :password => "iluvskittles", :balance => 1000)
       params = {
@@ -86,24 +92,29 @@ describe 'ApplicationController' do
       expect(last_response.body).to include("<h3>Your Balance: 1000.0</h3>")
     end
   end
-
+  #
   describe "GET '/logout'" do
     it "clears the session" do
+
       user1 = User.create(:username => "skittles123", :password => "iluvskittles", :balance => 1000)
+
       params = {
         "username"=> "skittles123", "password" => "iluvskittles"
       }
+
       post '/login', params
       get '/logout'
       expect(session[:user_id]).to be(nil)
     end
-    
+  end
+
     it 'redirects to \'/\'' do
+
       get '/logout'
       follow_redirect!
       expect(last_request.path_info).to eq('/')
     end
-
+  #
   end
 
 end
